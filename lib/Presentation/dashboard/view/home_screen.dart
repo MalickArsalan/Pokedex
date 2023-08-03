@@ -42,8 +42,8 @@ class HomeScreen extends StatelessWidget {
             iconTheme: const IconThemeData(
               color: Colors.white, //change your color here
             ),
-            title: const Text(
-              'Pokemon List',
+            title: Text(
+              state.tabIndex == 0 ? 'Pokemon List' : 'Favorite List',
               style: TextStyle(color: Colors.white),
             ),
             actions: [
