@@ -17,6 +17,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
 
   bool _obscureText = true;
+  String _email = '';
 
   void _toggle() {
     setState(() {
@@ -43,7 +44,7 @@ class _SignupScreenState extends State<SignupScreen> {
             MaterialPageRoute(
                 builder: (context) => BlocProvider(
                       create: (context) => BottomSheetBloc(),
-                      child: const HomeScreen(),
+                      child: HomeScreen(email: _email),
                     )),
           );
         }
@@ -84,7 +85,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             final formData = _formKey.currentState!.value;
                             final email = formData['email'] as String;
                             final password = formData['password'] as String;
-
+                            _email = email;
                             BlocProvider.of<AuthenticationBloc>(context).add(
                               SignupCredentialsEvent(
                                 email: email,

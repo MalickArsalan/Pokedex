@@ -13,6 +13,7 @@ import 'utils/const.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String _email = '';
     return BlocProvider(
       create: (context) => AuthenticationBloc(
         authenticationRepository:
@@ -33,14 +35,14 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.cyan,
         ),
-        home: FutureBuilder<bool?>(
+        home: FutureBuilder<String?>(
           future: _isHome(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              if (snapshot.data!) {
+              if (snapshot.data!.isNotEmpty) {
                 return BlocProvider(
                   create: (context) => BottomSheetBloc(),
-                  child: const HomeScreen(),
+                  child: HomeScreen(email: snapshot.data!.toString()),
                 );
               } else {
                 return const LoginScreen();
@@ -54,9 +56,8 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  Future<bool?> _isHome() async {
+  Future<String?> _isHome() async {
     final pref = await SharedPreferences.getInstance();
-
-    return pref.getBool(LOGIN_KEY);
+    return pref.getString(LOGIN_KEY);
   }
 }

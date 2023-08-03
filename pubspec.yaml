@@ -10,8 +10,12 @@ environment:
 
 
 dependencies:
+  network:
+    path: packages/network
   authentication_repository:
     path: packages/authentication_repository
+  pokemon_repository:
+    path: packages/pokemon_repository
   flutter:
     sdk: flutter
 

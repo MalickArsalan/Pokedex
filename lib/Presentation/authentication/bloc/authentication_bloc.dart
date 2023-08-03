@@ -29,7 +29,8 @@ class AuthenticationBloc
         event.password,
       );
       final pref = await SharedPreferences.getInstance();
-      pref.setBool(LOGIN_KEY, true);
+      pref.setString(LOGIN_KEY, event.email);
+      // pref.setString(event.email, event.email);
       emit(state.copyWith(submissionStatus: SubmissionStatus.success));
     } on FirebaseAuthException catch (authException) {
       emit(state.copyWith(
@@ -50,7 +51,8 @@ class AuthenticationBloc
         event.password,
       );
       final pref = await SharedPreferences.getInstance();
-      pref.setBool(LOGIN_KEY, true);
+      pref.setString(LOGIN_KEY, event.email);
+      // pref.setString(event.email, event.email);
       emit(state.copyWith(submissionStatus: SubmissionStatus.success));
     } on FirebaseAuthException catch (authException) {
       switch (authException.code) {

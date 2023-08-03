@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
 
   bool _obscureText = true;
+  String _email = '';
 
   void _toggle() {
     setState(() {
@@ -45,7 +46,9 @@ class _LoginScreenState extends State<LoginScreen> {
               MaterialPageRoute(
                   builder: (context) => BlocProvider(
                         create: (context) => BottomSheetBloc(),
-                        child: const HomeScreen(),
+                        child: HomeScreen(
+                          email: _email,
+                        ),
                       )),
             );
           }
@@ -87,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               final formData = _formKey.currentState!.value;
                               final email = formData['email'] as String;
                               final password = formData['password'] as String;
-
+                              _email = email;
                               BlocProvider.of<AuthenticationBloc>(context).add(
                                 LoginCredentialsEvent(
                                   email: email,

@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart';
+import 'package:network/http.dart';
+import 'package:pokedex/Presentation/authentication/view/login_screen.dart';
+import 'package:pokedex/Presentation/dashboard/view/pokemonlist.dart';
+import 'package:pokedex/utils/const.dart';
+import 'package:pokemon_repository/bloc/pokemon_bloc.dart';
+import 'package:pokemon_repository/pokemon_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bloc/bottom_sheet_bloc.dart';
 
@@ -14,23 +22,60 @@ List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
   ),
 ];
 
-const List<Widget> bottomNavScreen = <Widget>[
-  Center(child: Text('Index 0: Pokemon')),
-  Center(child: Text('Index 1: Category')),
-];
-
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key, required this.email});
+  final String email;
 
   @override
   Widget build(BuildContext context) {
+    String _email = this.email;
     return BlocConsumer<BottomSheetBloc, BottomSheetState>(
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
+          appBar: AppBar(
+            iconTheme: const IconThemeData(
+              color: Colors.white, //change your color here
+            ),
+            title: const Text(
+              'Pokemon List',
+              style: TextStyle(color: Colors.white),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () async {
+                    SharedPreferences.getInstance().then((pref) {
+                      pref.remove(LOGIN_KEY);
+                    });
+
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
+                        (route) => false);
+                  },
+                  child: const Text(
+                    "Logout",
+                    style: TextStyle(color: Colors.white),
+                  ))
+            ],
+          ),
           body: IndexedStack(
             index: state.tabIndex,
-            children: bottomNavScreen,
+            children: <Widget>[
+              BlocProvider(
+                create: (context) => PokemonBloc(
+                  pokemonRepository: PokemonRepository(
+                    HttpService(
+                      client: Client(),
+                    ),
+                  ),
+                  FAV_KEY: LOGIN_KEY,
+                ),
+                child: const PokemonList(),
+              ),
+              const Center(child: Text('Index 1: Category')),
+            ],
           ),
           bottomNavigationBar: BottomNavigationBar(
             items: bottomNavItems,

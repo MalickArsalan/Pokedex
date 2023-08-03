@@ -1,0 +1,13 @@
+name: network
+description: Dart package which manages the api calls.
+publish_to: none
+
+environment:
+  sdk: '>=3.0.5 <4.0.0'
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  equatable: ^2.0.5
+  firebase: ^9.0.3
