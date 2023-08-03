@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:network/http.dart';
 import 'package:pokedex/Presentation/authentication/view/login_screen.dart';
+import 'package:pokedex/Presentation/dashboard/view/favoritelist.dart';
 import 'package:pokedex/Presentation/dashboard/view/pokemonlist.dart';
 import 'package:pokedex/utils/const.dart';
 import 'package:pokemon_repository/bloc/pokemon_bloc.dart';
+import 'package:pokemon_repository/model/pkemon.dart';
 import 'package:pokemon_repository/pokemon_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,6 +33,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _email = this.email;
+    List<Pokemon> _favpokemons = [];
     return BlocConsumer<BottomSheetBloc, BottomSheetState>(
       listener: (context, state) {},
       builder: (context, state) {
@@ -74,7 +79,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 child: const PokemonList(),
               ),
-              const Center(child: Text('Index 1: Category')),
+              FavoriteScreen(favorites: _favpokemons)
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
@@ -82,7 +87,17 @@ class HomeScreen extends StatelessWidget {
             currentIndex: state.tabIndex,
             selectedItemColor: Theme.of(context).colorScheme.primary,
             unselectedItemColor: Colors.grey,
-            onTap: (index) {
+            onTap: (index) async {
+              if (index == 1) {
+                final prefs = await SharedPreferences.getInstance();
+                final favoriteKey = prefs.getString(_email);
+                if (favoriteKey != null) {
+                  _favpokemons = jsonDecode(favoriteKey)[_email]
+                      .map<Pokemon>(
+                          (pokemonJson) => Pokemon.fromJson(pokemonJson))
+                      .toList();
+                }
+              }
               BlocProvider.of<BottomSheetBloc>(context)
                   .add(TabChange(tabIndex: index));
             },

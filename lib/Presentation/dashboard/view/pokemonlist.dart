@@ -77,12 +77,12 @@ class PokemonList extends StatelessWidget {
             if (!isFav) {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Added to favorites")));
-              BlocProvider.of<PokemonBloc>(context)
-                  .add(AddToFavoriteEvent(pokemon));
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Removed from favorites")));
             }
+            BlocProvider.of<PokemonBloc>(context)
+                .add(AddToFavoriteEvent(pokemon));
           },
         ),
       ),

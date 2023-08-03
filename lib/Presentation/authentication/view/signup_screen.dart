@@ -40,13 +40,14 @@ class _SignupScreenState extends State<SignupScreen> {
               const SnackBar(content: Text('Invalid email or password.')));
         }
         if (state.submissionStatus == SubmissionStatus.success) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
                 builder: (context) => BlocProvider(
-                      create: (context) => BottomSheetBloc(),
-                      child: HomeScreen(email: _email),
-                    )),
-          );
+                  create: (context) => BottomSheetBloc(),
+                  child: HomeScreen(email: _email),
+                ),
+              ),
+              (route) => false);
         }
       }, builder: (context, state) {
         return SafeArea(
@@ -78,32 +79,35 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 16),
                       buildPasswordField('🎹 password'),
                       const SizedBox(height: 32),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.saveAndValidate()) {
-                            // Perform login logic
-                            final formData = _formKey.currentState!.value;
-                            final email = formData['email'] as String;
-                            final password = formData['password'] as String;
-                            _email = email;
-                            BlocProvider.of<AuthenticationBloc>(context).add(
-                              SignupCredentialsEvent(
-                                email: email,
-                                password: password,
-                              ),
-                            );
-                          }
-                        },
-                        style: const ButtonStyle(
-                          foregroundColor:
-                              MaterialStatePropertyAll(Colors.white),
-                          fixedSize: MaterialStatePropertyAll(Size(0, 48)),
+                      if (state.submissionStatus == SubmissionStatus.inProgress)
+                        const Center(child: CircularProgressIndicator())
+                      else
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.saveAndValidate()) {
+                              // Perform login logic
+                              final formData = _formKey.currentState!.value;
+                              final email = formData['email'] as String;
+                              final password = formData['password'] as String;
+                              _email = email;
+                              BlocProvider.of<AuthenticationBloc>(context).add(
+                                SignupCredentialsEvent(
+                                  email: email,
+                                  password: password,
+                                ),
+                              );
+                            }
+                          },
+                          style: const ButtonStyle(
+                            foregroundColor:
+                                MaterialStatePropertyAll(Colors.white),
+                            fixedSize: MaterialStatePropertyAll(Size(0, 48)),
+                          ),
+                          child: const Text(
+                            'Signup',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        child: const Text(
-                          'Signup',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
                       const SizedBox(height: 8),
                     ],
                   ),
