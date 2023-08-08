@@ -13,7 +13,7 @@ import 'package:pokemon_repository/model/pkemon.dart';
 import 'package:pokemon_repository/pokemon_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../bloc/bottom_sheet_bloc.dart';
+import '../bloc/bottom_navigation_bar_bloc.dart';
 
 List<BottomNavigationBarItem> bottomNavItems = const <BottomNavigationBarItem>[
   BottomNavigationBarItem(
@@ -34,7 +34,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     String _email = this.email;
     List<Pokemon> _favpokemons = [];
-    return BlocConsumer<BottomSheetBloc, BottomSheetState>(
+    return BlocConsumer<BottomNavigationBarBloc, BottomNavigationBarState>(
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
@@ -98,7 +98,7 @@ class HomeScreen extends StatelessWidget {
                       .toList();
                 }
               }
-              BlocProvider.of<BottomSheetBloc>(context)
+              BlocProvider.of<BottomNavigationBarBloc>(context)
                   .add(TabChange(tabIndex: index));
             },
           ),

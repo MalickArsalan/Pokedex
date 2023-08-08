@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:pokedex/Presentation/authentication/view/signup_screen.dart';
-import 'package:pokedex/Presentation/dashboard/bloc/bottom_sheet_bloc.dart';
+import 'package:pokedex/Presentation/dashboard/bloc/bottom_navigation_bar_bloc.dart';
 import 'package:pokedex/Presentation/dashboard/view/home_screen.dart';
 
 import '../bloc/authentication_bloc.dart';
@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
                   builder: (context) => BlocProvider(
-                    create: (context) => BottomSheetBloc(),
+                    create: (context) => BottomNavigationBarBloc(),
                     child: HomeScreen(
                       email: _email,
                     ),

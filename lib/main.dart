@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pokedex/Presentation/dashboard/bloc/bottom_sheet_bloc.dart';
+import 'package:pokedex/Presentation/dashboard/bloc/bottom_navigation_bar_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Presentation/authentication/bloc/authentication_bloc.dart';
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
             if (snapshot.hasData) {
               if (snapshot.data!.isNotEmpty) {
                 return BlocProvider(
-                  create: (context) => BottomSheetBloc(),
+                  create: (context) => BottomNavigationBarBloc(),
                   child: HomeScreen(email: snapshot.data!.toString()),
                 );
               } else {
