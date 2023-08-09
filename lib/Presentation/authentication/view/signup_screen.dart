@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:pokedex/Presentation/Componenets/custom_text_field.dart';
 import 'package:pokedex/Presentation/dashboard/bloc/bottom_navigation_bar_bloc.dart';
 import 'package:pokedex/Presentation/dashboard/view/home_screen.dart';
+import 'package:pokedex/utils/helper.dart';
 
 import '../bloc/authentication_bloc.dart';
 
@@ -75,9 +77,29 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                       const SizedBox(height: 32),
-                      buildEmailField('📧 Email Address'),
+                      const CustomTextField(
+                        name: 'email',
+                        textInputType: TextInputType.emailAddress,
+                        hintText: '📧 Email Address',
+                        validatorFunction: emailValidator,
+                      ),
                       const SizedBox(height: 16),
-                      buildPasswordField('🎹 password'),
+                      CustomTextField(
+                        name: 'password',
+                        hintText: '🎹 password',
+                        isObscureText: _obscureText,
+                        sufficeIconWidget: IconButton(
+                          icon: Icon(
+                            // Based on passwordVisible state choose the icon
+                            _obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                          onPressed: _toggle,
+                        ),
+                        validatorFunction: passwordValidator,
+                      ),
                       const SizedBox(height: 32),
                       if (state.submissionStatus == SubmissionStatus.inProgress)
                         const Center(child: CircularProgressIndicator())
@@ -117,73 +139,6 @@ class _SignupScreenState extends State<SignupScreen> {
           ),
         );
       }),
-    );
-  }
-
-  Widget buildEmailField(String hintText) {
-    return FormBuilderTextField(
-        name: 'email',
-        style: const TextStyle(color: Colors.cyan),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: const TextStyle(color: Colors.cyan),
-          floatingLabelBehavior: FloatingLabelBehavior.auto,
-          labelText: hintText,
-          filled: true,
-          border: const OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.cyan,
-              width: 1.0,
-            ),
-          ),
-        ),
-        validator: (email) {
-          // email regex
-          final emailRegex = RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+');
-
-          // validate email
-          if (email == null || email.isEmpty) {
-            return 'Email is required';
-          } else if (!emailRegex.hasMatch(email)) {
-            return 'Email is invalid';
-          } else {
-            return null;
-          }
-        });
-  }
-
-  Widget buildPasswordField(String hintText) {
-    return FormBuilderTextField(
-      name: 'password',
-      style: const TextStyle(color: Colors.cyan),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.cyan),
-        floatingLabelBehavior: FloatingLabelBehavior.auto,
-        labelText: hintText,
-        filled: true,
-        suffixIcon: IconButton(
-          icon: Icon(
-            // Based on passwordVisible state choose the icon
-            _obscureText ? Icons.visibility : Icons.visibility_off,
-            color: Theme.of(context).primaryColorDark,
-          ),
-          onPressed: _toggle,
-        ),
-        border: const OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.cyan,
-            width: 1.0,
-          ),
-        ),
-      ),
-      obscureText: _obscureText,
-      validator: (password) {
-        if (password == null || password.length < 8) {
-          return 'Password must be at least 8 characters';
-        }
-        return null;
-      },
     );
   }
 }
