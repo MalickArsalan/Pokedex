@@ -17,6 +17,10 @@ class LoginCredentialsEvent extends AuthenticationEvent {
   List<Object> get props => [email, password];
 }
 
+class LoginCompleteEvent extends AuthenticationEvent {
+  const LoginCompleteEvent();
+}
+
 class SignupCredentialsEvent extends AuthenticationEvent {
   const SignupCredentialsEvent({required this.email, required this.password});
 

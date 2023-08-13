@@ -14,6 +14,7 @@ class AuthenticationBloc
       : super(LoginInitial()) {
     on<LoginCredentialsEvent>(_signIn);
     on<SignupCredentialsEvent>(_signup);
+    on<LoginCompleteEvent>(_siginInComplete);
   }
 
   final AuthenticationRepository authenticationRepository;
@@ -38,6 +39,13 @@ class AuthenticationBloc
     } catch (e) {
       emit(state.copyWith(submissionStatus: SubmissionStatus.genericError));
     }
+  }
+
+  Future<void> _siginInComplete(
+    LoginCompleteEvent event,
+    Emitter<AuthenticationState> emit,
+  ) async {
+    emit(state.copyWith(submissionStatus: SubmissionStatus.idle));
   }
 
   Future<void> _signup(

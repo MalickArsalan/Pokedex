@@ -30,7 +30,19 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void initState() {
+    BlocProvider.of<AuthenticationBloc>(context).add(LoginCompleteEvent());
+    super.initState();
+  }
+
+  final items = const [Text('1'), Text('2')];
+  @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height -
+        (MediaQuery.of(context).padding.top +
+            MediaQuery.of(context).padding.bottom);
+
+    double width = (MediaQuery.of(context).size.width);
     return Scaffold(
       body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
         listener: (context, state) {
@@ -105,67 +117,80 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validatorFunction: passwordValidator,
                         ),
-                        const SizedBox(height: 32),
-                        if (state.submissionStatus ==
-                            SubmissionStatus.inProgress)
-                          const Center(child: CircularProgressIndicator())
-                        else
-                          ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.saveAndValidate()) {
-                                // Perform login logic
-                                final formData = _formKey.currentState!.value;
-                                final email = formData['email'] as String;
-                                final password = formData['password'] as String;
-                                _email = email;
-                                BlocProvider.of<AuthenticationBloc>(context)
-                                    .add(
-                                  LoginCredentialsEvent(
-                                    email: email,
-                                    password: password,
+                        const SizedBox(height: 16),
+                        state.submissionStatus == SubmissionStatus.inProgress ||
+                                state.submissionStatus ==
+                                    SubmissionStatus.success
+                            ? const Center(child: CircularProgressIndicator())
+                            : Column(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      if (_formKey.currentState!
+                                          .saveAndValidate()) {
+                                        // Perform login logic
+                                        final formData =
+                                            _formKey.currentState!.value;
+                                        final email =
+                                            formData['email'] as String;
+                                        final password =
+                                            formData['password'] as String;
+                                        _email = email;
+                                        BlocProvider.of<AuthenticationBloc>(
+                                                context)
+                                            .add(
+                                          LoginCredentialsEvent(
+                                            email: email,
+                                            password: password,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    style: ButtonStyle(
+                                      foregroundColor: MaterialStatePropertyAll(
+                                          Colors.white),
+                                      fixedSize: MaterialStatePropertyAll(
+                                          Size(width, 48)),
+                                    ),
+                                    child: const Text(
+                                      'Login',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ),
-                                );
-                              }
-                            },
-                            style: const ButtonStyle(
-                              foregroundColor:
-                                  MaterialStatePropertyAll(Colors.white),
-                              fixedSize: MaterialStatePropertyAll(Size(0, 48)),
-                            ),
-                            child: const Text(
-                              'Login',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        const SizedBox(height: 8),
-                        RichText(
-                          text: TextSpan(
-                            children: <TextSpan>[
-                              const TextSpan(
-                                text: 'Don\'t have an account? ',
-                                style: TextStyle(color: Colors.black87),
-                              ),
-                              TextSpan(
-                                text: 'Sign up',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            BlocProvider.value(
-                                          value: context
-                                              .read<AuthenticationBloc>(),
-                                          child: const SignupScreen(),
+                                  const SizedBox(height: 8),
+                                  RichText(
+                                    text: TextSpan(
+                                      children: <TextSpan>[
+                                        const TextSpan(
+                                          text: 'Don\'t have an account? ',
+                                          style:
+                                              TextStyle(color: Colors.black87),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                style: const TextStyle(color: Colors.cyan),
+                                        TextSpan(
+                                          text: 'Sign up',
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      BlocProvider.value(
+                                                    value: context.read<
+                                                        AuthenticationBloc>(),
+                                                    child: const SignupScreen(),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          style: const TextStyle(
+                                              color: Colors.cyan),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               )
-                            ],
-                          ),
-                        ),
                       ],
                     ),
                   ),
